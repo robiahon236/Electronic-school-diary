@@ -1,0 +1,10 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>{% if edit %}Изменить урок{% else %}Добавить урок{% endif %}</h2>
+<form method="post" class="col-md-5">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary">Сохранить</button>
+  <a class="btn btn-outline-secondary" href="{% url 'schedule' %}">Отмена</a>
+</form>
+{% endblock %}

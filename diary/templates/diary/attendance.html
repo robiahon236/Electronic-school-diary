@@ -1,0 +1,31 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Посещаемость</h2>
+{% include 'diary/includes/filter_form.html' %}
+{% if user.role == 'teacher' or user.role == 'admin' %}
+  <a class="btn btn-primary mb-2" href="{% url 'attendance_add' %}">Отметить посещаемость</a>
+{% endif %}
+<table class="table table-striped">
+  <tr>
+    <th><a href="?sort=student__last_name">Ученик</a></th>
+    <th>Предмет</th>
+    <th><a href="?sort=date">Дата</a></th>
+    <th><a href="?sort=status">Статус</a></th><th>Комментарий</th>
+    {% if user.role == 'teacher' or user.role == 'admin' %}<th></th>{% endif %}
+  </tr>
+  {% for a in attendance %}
+    <tr>
+      <td>{{ a.student }}</td><td>{{ a.subject }}</td>
+      <td>{{ a.date }}</td><td>{{ a.get_status_display }}</td><td>{{ a.comment }}</td>
+      {% if user.role == 'teacher' or user.role == 'admin' %}
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'attendance_edit' a.pk %}">Изменить</a>
+          <form method="post" action="{% url 'attendance_delete' a.pk %}" class="d-inline">
+            {% csrf_token %}<button class="btn btn-sm btn-outline-danger">Удалить</button>
+          </form>
+        </td>
+      {% endif %}
+    </tr>
+  {% empty %}<tr><td colspan="6">Записей нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

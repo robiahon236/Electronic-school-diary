@@ -1,0 +1,5 @@
+[
+  {"class": "9А", "subject": "Математика", "day": "mon", "room": "201", "lesson_number": 1},
+  {"class": "9А", "subject": "Физика", "day": "mon", "room": "305", "lesson_number": 2},
+  {"class": "9А", "subject": "Русский язык", "day": "tue", "room": "104", "lesson_number": 1}
+]

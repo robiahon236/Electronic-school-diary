@@ -1,0 +1,24 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Отчёт: средний балл</h2>
+<form method="get" class="row g-2 align-items-end mb-3">
+  <div class="col-auto">
+    <label class="form-label small mb-0">Класс</label>
+    <select name="class" class="form-select form-select-sm">
+      <option value="">Все классы</option>
+      {% for c in classes %}
+        <option value="{{ c.pk }}" {% if class_id == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-outline-primary btn-sm">Применить</button></div>
+</form>
+<a class="btn btn-outline-primary mb-3" href="{% url 'export_report' 'grades' %}">Экспорт в CSV</a>
+<table class="table table-striped">
+  <tr><th>Ученик</th><th>Класс</th><th>Предмет</th><th>Оценок</th><th>Средний балл</th></tr>
+  {% for r in report %}
+    <tr><td>{{ r.student }}</td><td>{{ r.class_room }}</td><td>{{ r.subject }}</td>
+        <td>{{ r.cnt }}</td><td><strong>{{ r.avg }}</strong></td></tr>
+  {% empty %}<tr><td colspan="5">Данных нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

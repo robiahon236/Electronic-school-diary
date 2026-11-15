@@ -1,0 +1,31 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Оценки</h2>
+{% include 'diary/includes/filter_form.html' %}
+{% if user.role == 'teacher' or user.role == 'admin' %}
+  <a class="btn btn-primary mb-2" href="{% url 'add_grade' %}">Выставить оценку</a>
+{% endif %}
+<table class="table table-striped">
+  <tr>
+    <th><a href="?sort=student__last_name">Ученик</a></th>
+    <th>Предмет</th>
+    <th><a href="?sort=value">Оценка</a></th>
+    <th><a href="?sort=date">Дата</a></th>
+    {% if user.role == 'teacher' or user.role == 'admin' %}<th></th>{% endif %}
+  </tr>
+  {% for g in grades %}
+    <tr>
+      <td>{{ g.student }}</td><td>{{ g.subject }}</td>
+      <td><strong>{{ g.value }}</strong></td><td>{{ g.date }}</td>
+      {% if user.role == 'teacher' or user.role == 'admin' %}
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'grade_edit' g.pk %}">Изменить</a>
+          <form method="post" action="{% url 'grade_delete' g.pk %}" class="d-inline">
+            {% csrf_token %}<button class="btn btn-sm btn-outline-danger">Удалить</button>
+          </form>
+        </td>
+      {% endif %}
+    </tr>
+  {% empty %}<tr><td colspan="5">Оценок нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

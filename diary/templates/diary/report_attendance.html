@@ -1,0 +1,12 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Отчёт: статистика посещаемости</h2>
+<a class="btn btn-outline-primary mb-3" href="{% url 'export_report' 'attendance' %}">Экспорт в CSV</a>
+<table class="table table-striped">
+  <tr><th>Ученик</th><th>Присутствовал</th><th>Отсутствовал</th><th>Опоздал</th><th>Болел</th><th>Всего</th></tr>
+  {% for r in report %}
+    <tr><td>{{ r.student }}</td><td>{{ r.present }}</td><td>{{ r.absent }}</td>
+        <td>{{ r.late }}</td><td>{{ r.sick }}</td><td>{{ r.total }}</td></tr>
+  {% empty %}<tr><td colspan="6">Данных нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

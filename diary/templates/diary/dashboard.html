@@ -1,0 +1,53 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Панель: {{ user.last_name }} {{ user.first_name }}</h2>
+
+{% if user.role == 'student' %}
+  <h4>Последние оценки</h4>
+  <ul class="list-group mb-4">
+    {% for g in grades %}
+      <li class="list-group-item">{{ g.date }} — {{ g.subject }}: <strong>{{ g.value }}</strong></li>
+    {% empty %}<li class="list-group-item">Оценок пока нет</li>{% endfor %}
+  </ul>
+  <h4>Домашние задания</h4>
+  <ul class="list-group mb-4">
+    {% for h in homework %}
+      <li class="list-group-item">до {{ h.due_date }} — {{ h.subject }}: {{ h.description|truncatechars:80 }}</li>
+    {% empty %}<li class="list-group-item">Заданий нет</li>{% endfor %}
+  </ul>
+  <h4>Расписание</h4>
+  <ul class="list-group">
+    {% for s in schedule %}
+      <li class="list-group-item">{{ s.get_day_display }}, урок {{ s.lesson_number }} — {{ s.subject }} (каб. {{ s.room }})</li>
+    {% empty %}<li class="list-group-item">Расписания нет</li>{% endfor %}
+  </ul>
+{% elif user.role == 'parent' %}
+  <h4>Дети: {% for c in children %}{{ c.last_name }} {% endfor %}</h4>
+  <h4>Оценки детей</h4>
+  <table class="table table-striped">
+    <tr><th>Ученик</th><th>Предмет</th><th>Оценка</th><th>Дата</th></tr>
+    {% for g in grades %}
+      <tr><td>{{ g.student }}</td><td>{{ g.subject }}</td><td>{{ g.value }}</td><td>{{ g.date }}</td></tr>
+    {% empty %}<tr><td colspan="4">Оценок нет</td></tr>{% endfor %}
+  </table>
+  <h4>Посещаемость детей</h4>
+  <table class="table table-striped">
+    <tr><th>Ученик</th><th>Предмет</th><th>Дата</th><th>Статус</th></tr>
+    {% for a in attendance %}
+      <tr><td>{{ a.student }}</td><td>{{ a.subject }}</td><td>{{ a.date }}</td><td>{{ a.get_status_display }}</td></tr>
+    {% empty %}<tr><td colspan="4">Записей нет</td></tr>{% endfor %}
+  </table>
+{% else %}
+  <p>Учеников в системе: <strong>{{ students_count }}</strong></p>
+  <h4>Последние выставленные оценки</h4>
+  <table class="table table-striped">
+    <tr><th>Ученик</th><th>Предмет</th><th>Оценка</th><th>Дата</th></tr>
+    {% for g in recent_grades %}
+      <tr><td>{{ g.student }}</td><td>{{ g.subject }}</td><td>{{ g.value }}</td><td>{{ g.date }}</td></tr>
+    {% empty %}<tr><td colspan="4">Оценок нет</td></tr>{% endfor %}
+  </table>
+  <a class="btn btn-primary" href="{% url 'add_grade' %}">Выставить оценку</a>
+  <a class="btn btn-outline-primary" href="{% url 'attendance_add' %}">Отметить посещаемость</a>
+  <a class="btn btn-outline-primary" href="{% url 'add_homework' %}">Задать ДЗ</a>
+{% endif %}
+{% endblock %}

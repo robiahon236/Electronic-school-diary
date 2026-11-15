@@ -1,0 +1,31 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>Домашние задания</h2>
+{% include 'diary/includes/filter_form.html' %}
+{% if user.role == 'teacher' or user.role == 'admin' %}
+  <a class="btn btn-primary mb-2" href="{% url 'add_homework' %}">Задать ДЗ</a>
+{% endif %}
+<table class="table table-striped">
+  <tr>
+    <th><a href="?sort=subject__name">Предмет</a></th>
+    <th><a href="?sort=class_room__name">Класс</a></th>
+    <th>Задание</th>
+    <th><a href="?sort=due_date">Срок сдачи</a></th>
+    {% if user.role == 'teacher' or user.role == 'admin' %}<th></th>{% endif %}
+  </tr>
+  {% for h in homework %}
+    <tr>
+      <td>{{ h.subject }}</td><td>{{ h.class_room }}</td>
+      <td>{{ h.description|truncatechars:100 }}</td><td>{{ h.due_date }}</td>
+      {% if user.role == 'teacher' or user.role == 'admin' %}
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'homework_edit' h.pk %}">Изменить</a>
+          <form method="post" action="{% url 'homework_delete' h.pk %}" class="d-inline">
+            {% csrf_token %}<button class="btn btn-sm btn-outline-danger">Удалить</button>
+          </form>
+        </td>
+      {% endif %}
+    </tr>
+  {% empty %}<tr><td colspan="5">Заданий нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

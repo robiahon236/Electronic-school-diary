@@ -1,0 +1,45 @@
+/* Собственные CSS-переменные темы (светлая) */
+:root {
+  --diary-accent: #0d6efd;
+  --diary-surface: #f8f9fa;
+  --diary-card-bg: #ffffff;
+  --diary-border: #dee2e6;
+  --diary-text: #212529;
+}
+
+/* Тёмная тема — переключается theme.js через data-bs-theme="dark" */
+[data-bs-theme='dark'] {
+  --diary-accent: #6ea8fe;
+  --diary-surface: #212529;
+  --diary-card-bg: #2b3035;
+  --diary-border: #495057;
+  --diary-text: #e9ecef;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--diary-surface);
+  color: var(--diary-text);
+}
+
+main.container {
+  flex: 1 0 auto;
+  padding-bottom: 2rem;
+}
+
+.navbar {
+  background: var(--diary-card-bg) !important;
+}
+
+.btn-primary {
+  background: var(--diary-accent);
+  border-color: var(--diary-accent);
+}
+
+.table,
+.list-group-item {
+  background: var(--diary-card-bg);
+  border-color: var(--diary-border);
+}

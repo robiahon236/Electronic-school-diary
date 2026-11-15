@@ -1,0 +1,11 @@
+{% extends 'diary/base.html' %}
+{% block content %}
+<h2>{% if edit %}Изменить запись{% else %}Отметить посещаемость{% endif %}</h2>
+<p class="text-muted">Повторная отметка на ту же дату обновляет существующую запись, а не создаёт дубликат.</p>
+<form method="post" class="col-md-5">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary">Сохранить</button>
+  <a class="btn btn-outline-secondary" href="{% url 'attendance' %}">Отмена</a>
+</form>
+{% endblock %}

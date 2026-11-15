@@ -1,0 +1,54 @@
+{% extends 'diary/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Расписание</h2>
+<form method="get" class="row g-2 align-items-end mb-3">
+  <div class="col-auto">
+    <label class="form-label small mb-0">День недели</label>
+    <select name="day" class="form-select form-select-sm">
+      <option value="">Все дни</option>
+      {% for code, title in days %}
+        <option value="{{ code }}" {% if day == code %}selected{% endif %}>{{ title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-primary btn-sm" type="submit">Применить</button>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'schedule' %}">Сбросить</a>
+  </div>
+</form>
+
+{% if user.role == 'teacher' or user.role == 'admin' %}
+  <div class="mb-3">
+    <button id="importBtn" class="btn btn-primary" data-url="{% url 'import_schedule_ajax' %}">
+      Обновить расписание
+    </button>
+    <span id="importStatus"></span>
+    <form method="post" action="{% url 'import_schedule' %}" class="d-inline">
+      {% csrf_token %}
+      <button class="btn btn-outline-secondary">Импорт (обычный запрос)</button>
+    </form>
+    <a class="btn btn-outline-primary" href="{% url 'schedule_add' %}">Добавить урок</a>
+  </div>
+{% endif %}
+
+<table class="table table-striped">
+  <tr><th>День</th><th>Урок</th><th>Класс</th><th>Предмет</th><th>Кабинет</th>
+    {% if user.role == 'teacher' or user.role == 'admin' %}<th></th>{% endif %}</tr>
+  {% for s in items %}
+    <tr>
+      <td>{{ s.get_day_display }}</td><td>{{ s.lesson_number }}</td>
+      <td>{{ s.class_room }}</td><td>{{ s.subject }}</td><td>{{ s.room }}</td>
+      {% if user.role == 'teacher' or user.role == 'admin' %}
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'schedule_edit' s.pk %}">Изменить</a>
+          <form method="post" action="{% url 'schedule_delete' s.pk %}" class="d-inline">
+            {% csrf_token %}<button class="btn btn-sm btn-outline-danger">Удалить</button>
+          </form>
+        </td>
+      {% endif %}
+    </tr>
+  {% empty %}<tr><td colspan="6">Расписание пусто — нажмите «Обновить расписание»</td></tr>{% endfor %}
+</table>
+{% endblock %}
+{% block scripts %}<script src="{% static 'diary/js/import.js' %}"></script>{% endblock %}
